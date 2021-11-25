@@ -75,6 +75,9 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
+          #Replace the Points with Underscores
+          $VERSION = $VERSION | tr . _
+
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
