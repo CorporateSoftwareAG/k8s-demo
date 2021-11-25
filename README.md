@@ -59,7 +59,7 @@ git clone https://github.com/CorporateSoftwareAG/k8s-demo.git
 ```
 
 7. Go to the Github Repository and open Settings -> Secrets
-8. Create a new/update the repository secret following names and secret values:
+8. Create new/update repository secrets with the following names and secret values:
 * "APP_TENANTID" => add the App Tenant Id you noted before
 * "ACR_URL" => add the ACR URL you noted before
 * "ACR_APPUSERNAME" => add the ACR App UserName you noted before
