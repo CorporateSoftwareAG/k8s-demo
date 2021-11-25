@@ -65,7 +65,7 @@ jobs:
       - name: Test Kubernetes Access
         run: kubectl get nodes
 
-      - name: Update the Kubernetes Manifest with the correct Image Id
+      - name: Regenerate Image and Version Data
         run: |
           IMAGE_ID=${{ secrets.ACR_URL }}/$IMAGE_NAME
           
@@ -77,6 +77,14 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          echo "{IMAGE_ID}={$IMAGE_ID}" >> $GITHUB_ENV
+          echo "{VERSION}={$VERSION}" >> $GITHUB_ENV
+
+      - name: Update the Kubernetes Manifest with the correct Image Id
+        run: |
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
