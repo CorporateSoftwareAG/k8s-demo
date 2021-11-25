@@ -84,6 +84,9 @@ jobs:
       - name: Update the Kubernetes Manifest with the correct Image Id
         run: |
 
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+
           sed -i "s/IMAGE_ID_WITH_VERSION/$IMAGE_ID:$VERSION/gi" azure-vote-manifest.yml
           sed -i "s/azure-vote-front/azure-vote-front-$VERSION/gi" azure-vote-manifest.yml
         
