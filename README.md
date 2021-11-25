@@ -58,7 +58,7 @@ Write-Output "ACR App Password: $acrAppPassword"
 * "ACR_APPUSERNAME" => add the ACR App UserName you noted before
 * "ACR_APPPASSWORD" => add the ACR App Password you noted before
 
-6. Create a new release in Github, give id a tag and a name in the format of semantic versioning. Example: v0.0.1
+6. Create a new release in Github, give it a tag and a name in the format of semantic versioning. Example: v0.0.1, v0.0.2 etc.
 7. Go to Github Actions in the Repository and wait for the build and deploy workflow to finish
 8. Open your Container Registry in the Azure Portal and check the existence of the docker image
 9. Open your Kubernetes Cluster and check the existence of the deployed service
