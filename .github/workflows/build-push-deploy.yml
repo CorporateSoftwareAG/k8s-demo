@@ -75,8 +75,8 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
-          #Replace the Points with Underscores
-          #VERSION=$(echo $VERSION | tr . _)
+          #Replace the Points with Minus
+          VERSION=$(echo $VERSION | tr . -)
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
