@@ -76,7 +76,7 @@ jobs:
           [ "$VERSION" == "master" ] && VERSION=latest
 
           #Replace the Points with Underscores
-          $VERSION = $VERSION | tr . _
+          VERSION=$(echo $VERSION | tr . _)
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
