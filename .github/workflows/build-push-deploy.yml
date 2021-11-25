@@ -54,3 +54,6 @@ jobs:
 
       - name: Test Kubernetes Access
         run: kubectl get nodes
+
+      - name: Deploy Demo App to Kubernetes
+        run: kubectl apply -f k8s-demo.yml
