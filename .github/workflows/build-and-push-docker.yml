@@ -1,0 +1,44 @@
+name: Build and Push Docker Image to GHCR
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: k8s/demo
+  ACR_URL: k8sdemoregistrynov2021.azurecr.io
+  ACR_APPID: 1187249a-1b0a-42e3-8347-c0815133967d
+
+jobs:
+  build-and-push:
+    name: "Build and Push"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: Log in to registry
+        run: echo "${{ secrets.ACR_APPPASSWORD }}" | docker login $ACR_URL --username $ACR_APPID --password-stdin
+
+      - name: Push image to ACR
+        run: |
+          IMAGE_ID=$ACR_URL/$IMAGE_NAME
+          VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+#  publish-to-k8s:
+#    needs: build-and-push
+#    runs-on: ubuntu-latest
+
+#    steps:
+#      - uses: actions/checkout@v2
+
+#      - name: Notify Slack and send eMail
+#        run: ...
