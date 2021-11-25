@@ -57,7 +57,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        image: k8sdemoregistrynov2021.azurecr.io/k8s/azure-vote-demo:latest
+        image: IMAGE_ID_WITH_VERSION
         ports:
         - containerPort: 80
         resources:
