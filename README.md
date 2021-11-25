@@ -15,12 +15,18 @@ $servicePrincipalName = "k8s-demo-registry-access"
 
 # Create a resource group
 az group create --name $resourceGroupName --location $location
+$resourceGroupId = az group show --name $resourceGroupName --query "id" --output tsv
 
 # Create a container registry
 az acr create --resource-group $resourceGroupName --name $acrName --sku Basic
 
 # Create a Kubernetes cluster
 az aks create --resource-group $resourceGroupName --name $kubernetesName --node-count 1 --enable-addons monitoring --generate-ssh-keys --kubernetes-version 1.20.9
+
+#Attacht the ACR to the Kubernetes Cluster
+az aks update -n $kubernetesName -g $resourceGroupName --attach-acr $acrName
+
+az aks get-credentials -g $resourceGroupName -n $kubernetesName
 
 # Obtain the full registry ID for subsequent command args
 $acrRegistryId = az acr show --name $acrName --query "id" --output tsv
