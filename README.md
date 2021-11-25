@@ -26,8 +26,6 @@ az aks create --resource-group $resourceGroupName --name $kubernetesName --node-
 #Attacht the ACR to the Kubernetes Cluster
 az aks update -n $kubernetesName -g $resourceGroupName --attach-acr $acrName
 
-az aks get-credentials -g $resourceGroupName -n $kubernetesName
-
 # Obtain the full registry ID for subsequent command args
 $acrRegistryId = az acr show --name $acrName --query "id" --output tsv
 $acrUrl = az acr show --name $acrName --query "loginServer" --output tsv
@@ -42,7 +40,6 @@ $acrAppPassword = az ad sp create-for-rbac --name $servicePrincipalName --scopes
 $acrAppUserName = az ad sp list --display-name $servicePrincipalName --query "[].appId" --output tsv
 $appTenantId = az ad sp list --display-name $servicePrincipalName --query "[].appOwnerTenantId" --output tsv
 
-
 #Verify Permissions work for the container registry
 echo $acrAppPassword | docker login $acrUrl --username $acrAppUserName --password-stdin
 
@@ -53,26 +50,18 @@ Write-Output "ACR App Password: $acrAppPassword"
 ```
 
 3. Copy Registry URL, UserName and Password to a NotePad file
-4. Clone the current repository to your disk using Powershell and the following command:
-```PowerShell
-git clone https://github.com/CorporateSoftwareAG/k8s-demo.git
-```
 
-7. Go to the Github Repository and open Settings -> Secrets
-8. Create new/update repository secrets with the following names and secret values:
+4. Go to the Github Repository and open Settings -> Secrets
+5. Create new/update repository secrets with the following names and secret values:
 * "APP_TENANTID" => add the App Tenant Id you noted before
 * "ACR_URL" => add the ACR URL you noted before
 * "ACR_APPUSERNAME" => add the ACR App UserName you noted before
 * "ACR_APPPASSWORD" => add the ACR App Password you noted before
 
-9. Open a Powershell in your Git Folder and run:
-
-```PowerShell
-git add *
-git commit -m "Updated ACR Info"
-git push
-```
-
-
+6. Create a new release in Github, give id a tag and a name in the format of semantic versioning. Example: v0.0.1
+7. Go to Github Actions in the Repository and wait for the build and deploy workflow to finish
+8. Open your Container Registry in the Azure Portal and check the existence of the docker image
+9. Open your Kubernetes Cluster and check the existence of the deployed service
+10. Click on the public ip of the frontend-service to test the application
 
 
