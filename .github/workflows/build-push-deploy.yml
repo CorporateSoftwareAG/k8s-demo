@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: k8s/demo
+  IMAGE_NAME: k8s/azure-vote-demo
   RG_NAME: k8s-demo-rg
   AKSCLUSTER_NAME: k8s-demo-kubernetes
 
@@ -56,4 +56,4 @@ jobs:
         run: kubectl get nodes
 
       - name: Deploy Demo App to Kubernetes
-        run: kubectl apply -f k8s-demo.yml
+        run: kubectl apply -f azure-vote-manifest.yml
