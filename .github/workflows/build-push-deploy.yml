@@ -75,9 +75,6 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
-          #Replace the Points with Minus
-          VERSION=$(echo $VERSION | tr . -)
-
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
@@ -87,7 +84,6 @@ jobs:
         run: |
 
           sed -i "s@IMAGE_ID_WITH_VERSION@$IMAGE_ID:$VERSION@gi" azure-vote-manifest.yml
-          #sed -i "s@azure-vote-front@azure-vote-front-$VERSION@gi" azure-vote-manifest.yml
         
       - name: Deploy Demo App to Kubernetes
         run: kubectl apply -f azure-vote-manifest.yml
