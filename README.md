@@ -3,7 +3,7 @@
 ## Kubernetes Setup
 
 1. Login to Azure Portal
-2. Run the following Commands:
+2. Open a Cloud Shell (Powershell) and run the following Commands:
 
 ```PowerShell
 #Define parameters
@@ -41,16 +41,24 @@ echo $acrAppPassword | docker login $acrUrl --username $acrAppUserName --passwor
 Write-Output "ACR Registry URL: $acrUrl"
 Write-Output "ACR App UserName: $acrAppUserName"
 Write-Output "ACR App Password: $acrAppPassword"
-
 ```
 
 3. Copy Registry URL, UserName and Password to a NotePad file
-4. Open the file .github\workflows\build-and-push-docker.yml
-5. Update the environment variables "ACR_URL" and "ACR_APPID" with the ACR Registry URL and ACR App UserName you noted before
-6. Go to the Github Repository and open Settings -> Secrets
-7. Create a new/update the repository secret with the name "ACR_APPPASSWORD", and add the ACR App Password you noted before
+4. Clone the current repository to your disk using Powershell and the following command:
+```PowerShell
+git clone https://github.com/CorporateSoftwareAG/k8s-demo.git
+```
+5. Open the file .github\workflows\build-and-push-docker.yml
+6. Update the environment variables "ACR_URL" and "ACR_APPID" with the ACR Registry URL and ACR App UserName you noted before
+7. Go to the Github Repository and open Settings -> Secrets
+8. Create a new/update the repository secret with the name "ACR_APPPASSWORD", and add the ACR App Password you noted before
+9. Open a Powershell in your Git Folder and run:
 
-
+```PowerShell
+git add *
+git commit -m "Updated ACR Info"
+git push
+```
 
 
 

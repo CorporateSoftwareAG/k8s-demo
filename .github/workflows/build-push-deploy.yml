@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to GHCR
+name: Build Push Deploy Docker Image
 
 on:
   push:
@@ -18,13 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build image
+      - name: Build Docker Image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
-      - name: Log in to registry
+      - name: Log in to Azure Container Registry
         run: echo "${{ secrets.ACR_APPPASSWORD }}" | docker login $ACR_URL --username $ACR_APPID --password-stdin
 
-      - name: Push image to ACR
+      - name: Push image to Azure Container Registry
         run: |
           IMAGE_ID=$ACR_URL/$IMAGE_NAME
           VERSION=latest
@@ -33,7 +33,7 @@ jobs:
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
-#  publish-to-k8s:
+#  deploy-to-k8s:
 #    needs: build-and-push
 #    runs-on: ubuntu-latest
 
