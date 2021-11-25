@@ -40,10 +40,13 @@ $acrUrl = az acr show --name $acrName --query "loginServer" --output tsv
 # owner:       push, pull, and assign roles
 $acrAppPassword = az ad sp create-for-rbac --name $servicePrincipalName --scopes $acrRegistryId --role acrpush --query "password" --output tsv
 $acrAppUserName = az ad sp list --display-name $servicePrincipalName --query "[].appId" --output tsv
+$appTenantId = az ad sp list --display-name $servicePrincipalName --query "[].appOwnerTenantId" --output tsv
+
 
 #Verify Permissions work for the container registry
 echo $acrAppPassword | docker login $acrUrl --username $acrAppUserName --password-stdin
 
+Write-Output "App Tenant Id: $appTenantId"
 Write-Output "ACR Registry URL: $acrUrl"
 Write-Output "ACR App UserName: $acrAppUserName"
 Write-Output "ACR App Password: $acrAppPassword"
@@ -54,10 +57,14 @@ Write-Output "ACR App Password: $acrAppPassword"
 ```PowerShell
 git clone https://github.com/CorporateSoftwareAG/k8s-demo.git
 ```
-5. Open the file .github\workflows\build-and-push-docker.yml
-6. Update the environment variables "ACR_URL" and "ACR_APPID" with the ACR Registry URL and ACR App UserName you noted before
+
 7. Go to the Github Repository and open Settings -> Secrets
-8. Create a new/update the repository secret with the name "ACR_APPPASSWORD", and add the ACR App Password you noted before
+8. Create a new/update the repository secret following names and secret values:
+* "APP_TENANTID" => add the App Tenant Id you noted before
+* "ACR_URL" => add the ACR URL you noted before
+* "ACR_APPUSERNAME" => add the ACR App UserName you noted before
+* "ACR_APPPASSWORD" => add the ACR App Password you noted before
+
 9. Open a Powershell in your Git Folder and run:
 
 ```PowerShell

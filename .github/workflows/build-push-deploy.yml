@@ -7,8 +7,8 @@ on:
 
 env:
   IMAGE_NAME: k8s/demo
-  ACR_URL: k8sdemoregistrynov2021.azurecr.io
-  ACR_APPID: 1187249a-1b0a-42e3-8347-c0815133967d
+  RG_NAME: k8s-demo-rg
+  AKSCLUSTER_NAME: k8s-demo-kubernetes
 
 jobs:
   build-and-push:
@@ -24,12 +24,12 @@ jobs:
 
       #Login to the Container Registry
       - name: Log in to Azure Container Registry
-        run: echo "${{ secrets.ACR_APPPASSWORD }}" | docker login $ACR_URL --username $ACR_APPID --password-stdin
+        run: echo "${{ secrets.ACR_APPPASSWORD }}" | docker login ${{ secrets.ACR_URL }} --username ${{ secrets.ACR_APPID }} --password-stdin
 
       # Tag and Push the Image to the Registry
       - name: Push image to Azure Container Registry
         run: |
-          IMAGE_ID=$ACR_URL/$IMAGE_NAME
+          IMAGE_ID=${{ secrets.ACR_URL }}/$IMAGE_NAME
           VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
@@ -38,40 +38,19 @@ jobs:
 
   deploy-to-k8s:
     needs: build-and-push
+    name: "Deploy to Kubernetes"
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-    # Set the target Azure Kubernetes Service (AKS) cluster. 
-    - uses: azure/aks-set-context@v1
-      with:
-        creds: '${{ secrets.AZURE_CREDENTIALS }}'
-        cluster-name: ${{ env.CLUSTER_NAME }}
-        resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
-    
-    # Create namespace if doesn't exist
-    - run: |
-        kubectl create namespace ${{ env.NAMESPACE }} --dry-run -o json | kubectl apply -f -
-    
-    # Create image pull secret for ACR
-    - uses: azure/k8s-create-secret@v1
-      with:
-        container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
-        container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
-        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-        secret-name: ${{ env.SECRET }}
-        namespace: ${{ env.NAMESPACE }}
-        force: true
-    
-    # Deploy app to AKS
-    - uses: azure/k8s-deploy@v1
-      with:
-        manifests: |
-          manifests/deployment.yml
-          manifests/service.yml
-        images: |
-          ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
-        imagepullsecrets: |
-          ${{ env.SECRET }}
-        namespace: ${{ env.NAMESPACE }}
+      #Login to Azure CLI
+      - name: Login to Azure CLI
+        run: az login --service-principal -u ${{ secrets.ACR_APPID }} -p ${{ secrets.ACR_APPPASSWORD }} --tenant ${{ secrets.APP_TENANTID }}
+
+      #Get and Store the AKS Credentials
+      - name: Get AKS Login Credentials
+        run: az aks get-credentials --resource-group $RG_NAME --name $AKSCLUSTER_NAME
+
+      - name: Test Kubernetes Access
+        run: kubectl nodes
