@@ -8,7 +8,7 @@ on:
 env:
   IMAGE_NAME: k8s/azure-vote-demo
   RG_NAME: k8s-demo-rg
-  AKSCLUSTER_NAME: k8s-demo-kubernetes
+  AKSCLUSTER_NAME: k8s-demo-kubernetes-mg
 
 jobs:
   build-and-push:
