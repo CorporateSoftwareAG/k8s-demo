@@ -7,11 +7,14 @@
 
 ```PowerShell
 #Define parameters
+#Leave these parameters
 $location = "westeurope"
 $resourceGroupName = "k8s-demo-rg"
+
+#Change these names if needed
 $acrName = "k8sDemoRegistryNov2021"
-$kubernetesName = "k8s-demo-kubernetes"
-$servicePrincipalName = "k8s-demo-registry-access"
+$kubernetesName = "k8s-demo-kubernetes-mg"
+$servicePrincipalName = "k8s-demo-registry-access-mg"
 
 # Create a resource group
 az group create --name $resourceGroupName --location $location
