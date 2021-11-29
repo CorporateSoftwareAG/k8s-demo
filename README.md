@@ -36,7 +36,7 @@ $acrUrl = az acr show --name $acrName --query "loginServer" --output tsv
 # acrpull:     pull only
 # acrpush:     push and pull
 # owner:       push, pull, and assign roles
-$acrAppPassword = az ad sp create-for-rbac --name $servicePrincipalName --scopes $acrRegistryId --role acrpush --query "password" --output tsv
+$acrAppPassword = az ad sp create-for-rbac --name $servicePrincipalName --scopes $resourceGroupId --role Contributor --query "password" --output tsv
 $acrAppUserName = az ad sp list --display-name $servicePrincipalName --query "[].appId" --output tsv
 $appTenantId = az ad sp list --display-name $servicePrincipalName --query "[].appOwnerTenantId" --output tsv
 
