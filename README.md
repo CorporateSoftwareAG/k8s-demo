@@ -30,8 +30,8 @@ az aks create --resource-group $resourceGroupName --name $kubernetesName --node-
 az aks update -n $kubernetesName -g $resourceGroupName --attach-acr $acrName
 
 # Obtain the full registry ID for subsequent command args
-$acrRegistryId = az acr show --name $acrName --query "id" --output tsv
-$acrUrl = az acr show --name $acrName --query "loginServer" --output tsv
+$acrRegistryId = az acr show --name $acrName --resource-group $resourceGroupName --query "id" --output tsv
+$acrUrl = az acr show --name $acrName --resource-group $resourceGroupName --query "loginServer" --output tsv
 
 # Create the service principal with rights scoped to the registry.
 # Default permissions are for docker pull access. Modify the '--role'
@@ -41,10 +41,10 @@ $acrUrl = az acr show --name $acrName --query "loginServer" --output tsv
 # owner:       push, pull, and assign roles
 $acrAppPassword = az ad sp create-for-rbac --name $servicePrincipalName --scopes $resourceGroupId --role Contributor --query "password" --output tsv
 $acrAppUserName = az ad sp list --display-name $servicePrincipalName --query "[].appId" --output tsv
-$appTenantId = az ad sp list --display-name $servicePrincipalName --query "[].appOwnerTenantId" --output tsv
+$appTenantId = az ad sp list --display-name $servicePrincipalName --query "[].appOwnerOrganizationId" --output tsv
 
 #Verify Permissions work for the container registry
-echo $acrAppPassword | docker login $acrUrl --username $acrAppUserName --password-stdin
+$acrAppPassword | docker login $acrUrl --username $acrAppUserName --password-stdin
 
 Write-Output "App Tenant Id: $appTenantId"
 Write-Output "ACR Registry URL: $acrUrl"
