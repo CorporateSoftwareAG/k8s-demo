@@ -24,7 +24,7 @@ $resourceGroupId = az group show --name $resourceGroupName --query "id" --output
 az acr create --resource-group $resourceGroupName --name $acrName --sku Basic
 
 # Create a Kubernetes cluster
-az aks create --resource-group $resourceGroupName --name $kubernetesName --node-count 1 --enable-addons monitoring --generate-ssh-keys --kubernetes-version 1.20.9
+az aks create --resource-group $resourceGroupName --name $kubernetesName --node-count 1 --enable-addons monitoring --generate-ssh-keys # --kubernetes-version 1.20.9
 
 #Attacht the ACR to the Kubernetes Cluster
 az aks update -n $kubernetesName -g $resourceGroupName --attach-acr $acrName
